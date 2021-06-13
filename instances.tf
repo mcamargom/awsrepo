@@ -25,15 +25,17 @@ resource "aws_instance" "webserver1" {
   }
  
   provisioner "remote-exec" {
-    inline = [
-      "sudo yum update",
-      "sudo yum install httpd",
+    inline = [ 
+      "sudo su",
+      "sudo yum -y update",
+      "sudo yum -y install httpd",
       "systemctl start httpd",
       "systemctl enable httpd.service",
+      "sudo yum -y install firewalld",
+      "systemctl start firewalld",
       "firewall-cmd --add-service=http --permanent",
       "firewall-cmd --reload",
-      "sudo yum install https://repo.ius.io/ius-release-el7.rpm",
-      "yum install mod_php73 php73-bcmath php73-cli php73-gd php73-ldap php73-mbstring php73-mysqlnd php73-soap"
+      "sudo systemctl start httpd",
     ]
   }
 
@@ -64,15 +66,16 @@ resource "aws_instance" "webserver2" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo yum update",
-      "sudo yum install httpd",
+      "sudo su",
+      "sudo yum -y update",
+      "sudo yum -y install httpd",
       "systemctl start httpd",
       "systemctl enable httpd.service",
+      "sudo yum -y install firewalld",
+      "systemctl start firewalld",
       "firewall-cmd --add-service=http --permanent",
       "firewall-cmd --reload",
-      "sudo yum install https://repo.ius.io/ius-release-el7.rpm",
-      "yum install mod_php73 php73-bcmath php73-cli php73-gd php73-ldap php73-mbstring php73-mysqlnd php73-soap",
-      "systemctl start nginx && systemctl enable nginx"
+      "sudo systemctl start httpd"
     ]
   }
 
@@ -84,7 +87,7 @@ resource "aws_lb" "obligatorio_load_balancer" {
   name               = "obligatorioLoadBalancer"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.sg-http-obligatorio.id]
+  security_groups    = [aws_security_group.sg-http-obligatorio.id, aws_security_group.sg-ssh-obligatorio.id]
   subnets            = [aws_subnet.subnet_public1.id, aws_subnet.subnet_public2.id]
 
   tags = {
@@ -96,25 +99,24 @@ resource "aws_lb" "obligatorio_load_balancer" {
 ######LOAD BALANCER LISTENER#####
 
 resource "aws_lb_listener" "balanceador_listener" {
-  load_balancer_arn = aws_lb.obligatorio_load_balancer.arn
-
+  load_balancer_arn = aws_lb.obligatorio_load_balancer.id
   port     = 80
   protocol = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.tg_obligatorio.arn
+    target_group_arn = aws_lb_target_group.tg_obligatorio.id
   }
 }
 
 resource "aws_lb_target_group_attachment" "tg_webserver1" {
-  target_group_arn = aws_lb_target_group.tg_obligatorio.arn
+  target_group_arn = aws_lb_target_group.tg_obligatorio.id
   target_id        = aws_instance.webserver1.id
   port             = 80
 }
 
 resource "aws_lb_target_group_attachment" "tg_webserver2" {
-  target_group_arn = aws_lb_target_group.tg_obligatorio.arn
+  target_group_arn = aws_lb_target_group.tg_obligatorio.id
   target_id        = aws_instance.webserver2.id
   port             = 80
 }

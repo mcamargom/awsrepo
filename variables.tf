@@ -16,7 +16,7 @@ variable "instance" {
 }
 
 variable "ami_centos" {
-  default = "ami-06e2b3882a1e987b7"
+  default = "ami-0aeeebd8d2ab47354"
 }
 
 variable "key" {
