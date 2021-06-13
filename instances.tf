@@ -24,20 +24,20 @@ resource "aws_instance" "webserver1" {
     host = aws_instance.webserver1.public_ip
   }
  
-  provisioner "remote-exec" {
-    inline = [ 
-      "sudo su",
-      "sudo yum -y update",
-      "sudo yum -y install httpd",
-      "systemctl start httpd",
-      "systemctl enable httpd.service",
-      "sudo yum -y install firewalld",
-      "systemctl start firewalld",
-      "firewall-cmd --add-service=http --permanent",
-      "firewall-cmd --reload",
-      "sudo systemctl start httpd",
-    ]
-  }
+  # provisioner "remote-exec" {
+    # inline = [ 
+      # "sudo su",
+      # "sudo yum -y update",
+      # "sudo yum -y install httpd",
+      # "systemctl start httpd",
+      # "systemctl enable httpd.service",
+      # "sudo yum -y install firewalld",
+      # "systemctl start firewalld",
+      # "firewall-cmd --add-service=http --permanent",
+      # "firewall-cmd --reload",
+      # "sudo systemctl start httpd",
+    # ]
+  # }
 
 
 }
@@ -64,20 +64,20 @@ resource "aws_instance" "webserver2" {
     host = aws_instance.webserver1.public_ip
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo su",
-      "sudo yum -y update",
-      "sudo yum -y install httpd",
-      "systemctl start httpd",
-      "systemctl enable httpd.service",
-      "sudo yum -y install firewalld",
-      "systemctl start firewalld",
-      "firewall-cmd --add-service=http --permanent",
-      "firewall-cmd --reload",
-      "sudo systemctl start httpd"
-    ]
-  }
+  # provisioner "remote-exec" {
+    # inline = [
+      # "sudo su",
+      # "sudo yum -y update",
+      # "sudo yum -y install httpd",
+      # "systemctl start httpd",
+      # "systemctl enable httpd.service",
+      # "sudo yum -y install firewalld",
+      # "systemctl start firewalld",
+      # "firewall-cmd --add-service=http --permanent",
+      # "firewall-cmd --reload",
+      # "sudo systemctl start httpd"
+    # ]
+  # }
 
 }
 
