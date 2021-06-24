@@ -6,6 +6,7 @@ resource "aws_instance" "webserver1" {
   ami           = var.ami_centos
   instance_type = var.instance
   key_name      = var.key
+  user_data = "${file("/home/mauricio/Descargas/Obligatorio aws/httpd.sh")}"
 
   #Asociacion de VPC
   
@@ -47,6 +48,7 @@ resource "aws_instance" "webserver2" {
   ami           = var.ami_centos
   instance_type = var.instance
   key_name      = var.key
+  user_data = "${file("/home/mauricio/Descargas/Obligatorio aws/httpd.sh")}"
 
   #Asociacion de VPC
 
